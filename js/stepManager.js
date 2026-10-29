@@ -13,7 +13,7 @@ class StepManager {
         id: 0,
         title: 'Step 0: 自然落下（制御なし）',
         shortTitle: 'Step 0',
-        mission: '初期の傾き角度を設定して再生してみよう。制御がない自然の状態では、重力によって傘は必ず倒れてしまいます。',
+        mission: '再生ボタンを押して、初期の傾きから傘がどのように倒れるか観察してみよう。傘の初期傾きや長さ・重さは左上のメニュー（≡）から自由に変更できます。',
         formulaKaTeX: 'F = 0',
         theoryHtml: `
           <p class="mb-2">台車（手）に力を一切加えない場合、振子の運動は重力トルクのみによって支配されます。</p>
@@ -21,19 +21,7 @@ class StepManager {
           <div class="katex-block my-2" data-expr="\\ddot{\\theta} \\approx \\frac{g}{l} \\theta"></div>
           <p>この解は指数関数的に増大（$\\theta(t) \\propto e^{\\sqrt{g/l}\\,t}$）し、わずかな傾きからでも瞬時に転倒します。</p>
         `,
-        params: [
-          {
-            key: 'theta0Deg',
-            label: '初期傾き角 (θ₀)',
-            min: -15,
-            max: 15,
-            step: 1,
-            unit: '°',
-            default: 5,
-            isInitialAngle: true,
-          },
-        ],
-        defaultInitAngleDeg: 5,
+        params: [],
       },
       {
         id: 1,
@@ -55,18 +43,7 @@ class StepManager {
             unit: 'N',
             default: 10,
           },
-          {
-            key: 'theta0Deg',
-            label: '初期傾き角 (θ₀)',
-            min: -15,
-            max: 15,
-            step: 1,
-            unit: '°',
-            default: 5,
-            isInitialAngle: true,
-          },
         ],
-        defaultInitAngleDeg: 5,
       },
       {
         id: 2,
@@ -90,18 +67,7 @@ class StepManager {
             unit: '',
             default: 18,
           },
-          {
-            key: 'theta0Deg',
-            label: '初期傾き角 (θ₀)',
-            min: -15,
-            max: 15,
-            step: 1,
-            unit: '°',
-            default: 5,
-            isInitialAngle: true,
-          },
         ],
-        defaultInitAngleDeg: 5,
       },
       {
         id: 3,
@@ -132,17 +98,7 @@ class StepManager {
             unit: '',
             default: 6,
           },
-          {
-            key: 'theta0Deg',
-            label: '初期傾き角 (θ₀)',
-            min: -15,
-            max: 15,
-            step: 1,
-            unit: '°',
-            default: 8,
-          },
         ],
-        defaultInitAngleDeg: 8,
       },
       {
         id: 4,
@@ -193,7 +149,6 @@ class StepManager {
             default: 5.5,
           },
         ],
-        defaultInitAngleDeg: 8,
       },
     ];
 
@@ -215,11 +170,10 @@ class StepManager {
     this.renderStepContent(stepDef);
     this.renderParamSliders(stepDef);
     this.renderKaTeX(stepDef);
+    this.renderPhysicsParams();
 
     if (triggerReset) {
-      const initDeg = this.getParamValue(stepId, 'theta0Deg') ?? stepDef.defaultInitAngleDeg ?? 5;
-      const initRad = (initDeg * Math.PI) / 180;
-      this.physics.reset(initRad, 0);
+      this.physics.reset(this.physics.theta0, 0);
     }
 
     if (typeof this.onStepChangeCallback === 'function') {
@@ -320,6 +274,16 @@ class StepManager {
     if (!container) return;
 
     container.innerHTML = '';
+
+    if (!stepDef.params || stepDef.params.length === 0) {
+      container.innerHTML = `
+        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded text-xs text-slate-500 leading-relaxed">
+          傘の初期傾きや長さ・質量は左上「≡」メニューから変更できます。
+        </div>
+      `;
+      return;
+    }
+
     const stepKey = `step${stepDef.id}`;
 
     stepDef.params.forEach((param) => {
@@ -428,7 +392,7 @@ class StepManager {
         }
         const blocks = theoryBody.querySelectorAll('.katex-block');
         blocks.forEach((el) => {
-          const expr = el.getAttribute('data-expr');
+          const expr = el.getAttribute ? el.getAttribute('data-expr') : null;
           if (expr && window.katex) {
             try {
               katex.render(expr, el, { displayMode: true, throwOnError: false });
@@ -455,6 +419,157 @@ class StepManager {
     if (this.activeStepId > 0) {
       this.setStep(this.activeStepId - 1, true);
     }
+  }
+
+  /**
+   * ドロワー内の物理モデル設定（質量・長さ）スライダーを生成
+   */
+  renderPhysicsParams() {
+    const container = document.getElementById('physics-params-container');
+    if (!container || !this.physics) return;
+
+    container.innerHTML = '';
+
+    const params = [
+      {
+        key: 'theta0Deg',
+        label: '初期傾き角 (θ₀)',
+        note: 'シミュレーション開始時の姿勢',
+        min: -45,
+        max: 45,
+        step: 1,
+        unit: '°',
+        default: 15,
+        isAngle: true,
+      },
+      {
+        key: 'l',
+        label: '振子の重心長 (l)',
+        note: '全長は 2·l',
+        min: 0.2,
+        max: 1.0,
+        step: 0.05,
+        unit: 'm',
+        default: 0.5,
+      },
+      {
+        key: 'm',
+        label: '振子の質量 (m)',
+        note: '傘の重さ',
+        min: 0.05,
+        max: 0.50,
+        step: 0.05,
+        unit: 'kg',
+        default: 0.15,
+      },
+      {
+        key: 'M',
+        label: '台車の質量 (M)',
+        note: '手の慣性質量',
+        min: 0.5,
+        max: 3.0,
+        step: 0.1,
+        unit: 'kg',
+        default: 1.0,
+      },
+    ];
+
+    params.forEach((param) => {
+      let curVal;
+      if (param.isAngle) {
+        curVal = Math.round((this.physics.theta0 * 180) / Math.PI);
+      } else {
+        curVal = this.physics[param.key] ?? param.default;
+      }
+      const card = document.createElement('div');
+      card.className = 'bg-white border border-slate-200 rounded p-2 mb-2 text-xs shadow-sm';
+
+      const formattedVal = param.isAngle ? `${curVal}${param.unit}` : `${curVal.toFixed(2)}${param.unit}`;
+
+      card.innerHTML = `
+        <div class="flex items-center justify-between font-medium text-slate-700 mb-1">
+          <div>
+            <span>${param.label}</span>
+            <span class="text-[10px] text-slate-400 block">${param.note}</span>
+          </div>
+          <span class="font-mono text-slate-900 bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded min-w-[50px] text-center" id="val-phy-${param.key}">
+            ${formattedVal}
+          </span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <button type="button" class="btn-phy-minus w-7 h-7 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded font-bold text-xs flex items-center justify-center shrink-0 touch-manipulation">−</button>
+          <input type="range"
+            class="slider-input flex-1 h-2 bg-slate-200 rounded appearance-none cursor-pointer accent-slate-800"
+            id="slider-phy-${param.key}"
+            min="${param.min}"
+            max="${param.max}"
+            step="${param.step}"
+            value="${curVal}"
+          />
+          <button type="button" class="btn-phy-plus w-7 h-7 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded font-bold text-xs flex items-center justify-center shrink-0 touch-manipulation">＋</button>
+        </div>
+      `;
+
+      container.appendChild(card);
+
+      const slider = card.querySelector(`#slider-phy-${param.key}`);
+      const valDisplay = card.querySelector(`#val-phy-${param.key}`);
+
+      const updateValue = (newVal) => {
+        let val = Number(newVal);
+        val = Math.max(param.min, Math.min(param.max, val));
+
+        if (param.isAngle) {
+          val = Math.round(val);
+          slider.value = val;
+          valDisplay.textContent = `${val}${param.unit}`;
+          this.physics.theta0 = (val * Math.PI) / 180;
+          this.physics.theta = this.physics.theta0;
+          this.physics.omega = 0;
+        } else {
+          val = Number(val.toFixed(2));
+          slider.value = val;
+          valDisplay.textContent = `${val.toFixed(2)}${param.unit}`;
+          this.physics[param.key] = val;
+        }
+      };
+
+      slider.addEventListener('input', (e) => updateValue(e.target.value));
+
+      card.querySelector('.btn-phy-minus').addEventListener('click', () => {
+        const next = Number(slider.value) - param.step;
+        updateValue(next);
+      });
+
+      card.querySelector('.btn-phy-plus').addEventListener('click', () => {
+        const next = Number(slider.value) + param.step;
+        updateValue(next);
+      });
+    });
+
+    // デフォルト値に戻すボタン
+    const resetBtn = document.createElement('button');
+    resetBtn.type = 'button';
+    resetBtn.className = 'w-full mt-1 px-3 py-1.5 text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-200 rounded transition';
+    resetBtn.textContent = '物理パラメータを初期値に戻す';
+    resetBtn.addEventListener('click', () => {
+      params.forEach(param => {
+        const slider = document.getElementById(`slider-phy-${param.key}`);
+        const valDisplay = document.getElementById(`val-phy-${param.key}`);
+        if (param.isAngle) {
+          this.physics.theta0 = (param.default * Math.PI) / 180;
+          this.physics.theta = this.physics.theta0;
+          this.physics.omega = 0;
+          if (slider) slider.value = param.default;
+          if (valDisplay) valDisplay.textContent = `${param.default}${param.unit}`;
+        } else {
+          this.physics[param.key] = param.default;
+          if (slider) slider.value = param.default;
+          if (valDisplay) valDisplay.textContent = `${param.default.toFixed(2)}${param.unit}`;
+        }
+      });
+    });
+    container.appendChild(resetBtn);
   }
 }
 

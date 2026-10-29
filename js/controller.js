@@ -8,24 +8,19 @@ class InvertedPendulumController {
     // 各ステップの調整可能パラメータ
     this.params = {
       // Step 0: 自然落下（制御なし）
-      step0: {
-        theta0Deg: 5.0, // 初期傾き角 [度]
-      },
+      step0: {},
       // Step 1: ON/OFF制御
       step1: {
         forceFixed: 10.0, // 一定の押し力 [N]
-        theta0Deg: 5.0,
       },
       // Step 2: 比例制御 (P)
       step2: {
         kp: 18.0, // 比例ゲイン
-        theta0Deg: 5.0,
       },
       // Step 3: PD制御
       step3: {
         kp: 25.0, // 比例ゲイン
         kd: 6.0,  // 微分ゲイン
-        theta0Deg: 8.0,
       },
       // Step 4: 完全制御（PD + 台車位置・速度フィードバック）
       step4: {
@@ -33,7 +28,6 @@ class InvertedPendulumController {
         kd: 8.0,  // 傘 微分ゲイン
         lp: 4.0,  // 台車位置ゲイン
         ld: 5.5,  // 台車速度ゲイン
-        theta0Deg: 8.0,
       },
     };
   }

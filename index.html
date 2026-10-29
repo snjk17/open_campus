@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" class="h-full">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>倒立振子制御シミュレータ | 身近な例から学ぶ制御工学</title>
   
   <!-- Tailwind CSS CDN -->
@@ -13,150 +13,60 @@
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
-  <!-- カスタムスタイル -->
-  <link rel="stylesheet" href="css/style.css">
+  <!-- カスタムスタイル（完全自立型レスポンシブ） -->
+  <link rel="stylesheet" href="css/style.css?v=20261029_3">
 </head>
-<body class="bg-slate-50 text-slate-900 h-screen w-screen overflow-hidden flex flex-col select-none antialiased">
+<body class="bg-slate-50 text-slate-900 app-layout select-none antialiased">
 
   <!-- ==================== ヘッダー ==================== -->
-  <header class="bg-white border-b border-slate-200 px-3 sm:px-4 py-2 flex items-center justify-between shrink-0 z-30">
+  <header class="bg-white border-b border-slate-200 px-3 sm:px-4 py-2 flex items-center justify-between shrink-0 z-30 h-11 sm:h-12">
     <div class="flex items-center space-x-2">
-      <!-- ハンバーガーメニューボタン（ステップ遷移・質量設定） -->
-      <button type="button" id="btn-menu-toggle" class="p-1.5 -ml-1 text-slate-700 hover:bg-slate-100 active:bg-slate-200 rounded transition flex items-center justify-center touch-target-min" aria-label="設定とステップ遷移">
+      <!-- ハンバーガーメニューボタン -->
+      <button type="button" id="btn-menu-toggle" class="p-1 -ml-1 text-slate-700 hover:bg-slate-100 active:bg-slate-200 rounded transition flex items-center justify-center touch-target-min" aria-label="設定とステップ遷移">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
-      <h1 class="text-sm md:text-base font-semibold tracking-tight text-slate-800 flex items-center space-x-1.5">
+      <h1 class="text-xs sm:text-sm md:text-base font-semibold tracking-tight text-slate-800 flex items-center space-x-1.5">
         <span>倒立振子シミュレータ</span>
       </h1>
     </div>
 
     <!-- 再生/停止 & リセット（デフォルトは停止状態） -->
     <div class="flex items-center space-x-1.5">
-      <button type="button" id="btn-play-pause" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-slate-900 text-white border border-slate-800 rounded hover:bg-slate-800 active:bg-slate-950 transition flex items-center touch-target-min">
+      <button type="button" id="btn-play-pause" class="px-2.5 sm:px-3 py-1 text-xs font-medium bg-slate-900 text-white border border-slate-800 rounded hover:bg-slate-800 active:bg-slate-950 transition flex items-center touch-target-min">
         <span class="mr-1">▶</span> 再生
       </button>
-      <button type="button" id="btn-reset" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-white text-slate-700 border border-slate-300 rounded hover:bg-slate-100 active:bg-slate-200 transition flex items-center touch-target-min">
+      <button type="button" id="btn-reset" class="px-2 sm:px-2.5 py-1 text-xs font-medium bg-white text-slate-700 border border-slate-300 rounded hover:bg-slate-100 active:bg-slate-200 transition flex items-center touch-target-min">
         <span class="mr-1">⟲</span> リセット
       </button>
     </div>
   </header>
 
   <!-- ==================== メインレイアウト ==================== -->
-  <div class="flex-1 flex flex-col md:flex-row overflow-hidden relative">
+  <div class="main-content">
 
-    <!-- PC用 左ペイン / スマホ用 下部パネル -->
-    <aside class="order-2 md:order-1 flex-1 md:w-1/2 lg:w-5/12 bg-white md:border-r border-slate-200 overflow-y-auto p-4 md:p-5 flex flex-col justify-between space-y-4">
+    <!-- 1. シミュレータペイン（スマホ時は上部固定、PC時は右ペイン） -->
+    <main class="simulator-pane">
       
-      <div class="space-y-4">
-        <!-- 【外乱操作】左右ボタンを矢印記号のみにし、中央のスライドバー枠を大きく拡大 -->
-        <section class="bg-slate-50 border border-slate-200 rounded-lg p-2.5">
-          <div class="flex items-center gap-2">
-            
-            <!-- 左押しボタン (◀ のみ) -->
-            <button type="button" id="btn-disturb-left" class="w-11 sm:w-12 h-11 shrink-0 bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded-lg shadow-sm font-bold text-base text-slate-800 flex items-center justify-center touch-target-min transition" title="左から押す">
-              ◀
-            </button>
-
-            <!-- 中央: 大きなスライドバー枠 -->
-            <div class="flex-1 bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm flex flex-col justify-center min-w-0">
-              <div class="flex items-center justify-between text-[11px] sm:text-xs text-slate-500 font-medium mb-1">
-                <span>外乱の強さ</span>
-                <span id="val-disturb-strength" class="font-mono font-bold text-slate-900 text-xs">2.0N</span>
-              </div>
-              <div class="flex items-center gap-2">
-                <button type="button" id="btn-disturb-minus" class="w-6 h-6 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded text-xs font-bold flex items-center justify-center shrink-0 touch-manipulation">−</button>
-                <input type="range" id="slider-disturb-strength" min="0.5" max="5.0" step="0.5" value="2.0" class="flex-1 h-2 bg-slate-200 rounded appearance-none cursor-pointer accent-slate-800">
-                <button type="button" id="btn-disturb-plus" class="w-6 h-6 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded text-xs font-bold flex items-center justify-center shrink-0 touch-manipulation">＋</button>
-              </div>
-            </div>
-
-            <!-- 右押しボタン (▶ のみ) -->
-            <button type="button" id="btn-disturb-right" class="w-11 sm:w-12 h-11 shrink-0 bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded-lg shadow-sm font-bold text-base text-slate-800 flex items-center justify-center touch-target-min transition" title="右から押す">
-              ▶
-            </button>
-
-          </div>
-        </section>
-
-        <!-- ステップタイトル & ミッション -->
-        <section class="border-t border-slate-100 pt-3">
-          <h2 id="step-title" class="text-sm md:text-base font-bold text-slate-800 mb-1.5">
-            Step 0: 自然落下（制御なし）
-          </h2>
-          <div class="bg-slate-50 border-l-2 border-slate-700 p-2.5 sm:p-3 rounded-r text-xs md:text-sm text-slate-700 space-y-1">
-            <div class="font-semibold text-slate-900 text-xs">ミッション</div>
-            <p id="step-mission" class="leading-relaxed">
-              初期の傾き角度を設定して再生してみよう。制御がない自然の状態では、重力によって傘は必ず倒れてしまいます。
-            </p>
-          </div>
-        </section>
-
-        <!-- パラメータ調整 -->
-        <section class="border-t border-slate-100 pt-3">
-          <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">パラメータ調整</div>
-          <div id="params-container" class="space-y-2">
-            <!-- stepManager.jsで動的生成 -->
-          </div>
-        </section>
-
-        <!-- 数式と理論解説（アコーディオン） -->
-        <section class="border-t border-slate-100 pt-3">
-          <button type="button" id="accordion-header" class="w-full flex items-center justify-between py-2 text-xs md:text-sm font-medium text-slate-700 hover:text-slate-900 text-left focus:outline-none">
-            <span>数式・制御則の解説</span>
-            <svg id="accordion-arrow" class="w-4 h-4 text-slate-500 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-            </svg>
-          </button>
-          <div id="accordion-body" class="hidden mt-2 p-3 bg-slate-50 border border-slate-200 rounded text-xs text-slate-700 space-y-3">
-            <div class="border-b border-slate-200 pb-2">
-              <div class="text-slate-500 text-xs mb-1">現在の制御則 (入力 F):</div>
-              <div id="formula-display" class="py-1 overflow-x-auto text-center text-sm font-semibold"></div>
-            </div>
-            <div id="theory-content" class="leading-relaxed">
-              <!-- stepManager.jsで動的生成 -->
-            </div>
-          </div>
-        </section>
-      </div>
-
-      <!-- メイン画面用 ステップ進行ボタン（同じ横幅 / Step 0と4は全幅） -->
-      <div class="pt-3 border-t border-slate-200 flex items-center justify-between gap-2.5">
-        <button type="button" class="btn-prev-step-action hidden px-3.5 py-2.5 text-xs font-medium bg-white text-slate-700 border border-slate-300 rounded hover:bg-slate-100 active:bg-slate-200 transition text-center touch-target-min">
-          ◀ 前のステップ
-        </button>
-        <button type="button" class="btn-next-step-action w-full px-4 py-2.5 text-xs md:text-sm font-medium bg-slate-900 text-white rounded hover:bg-slate-800 active:bg-slate-950 transition text-center touch-target-min shadow-sm">
-          次のステップ (Step 1) ➔
-        </button>
-      </div>
-
-    </aside>
-
-    <!-- PC用 右ペイン / スマホ用 上部シミュレータ -->
-    <main class="order-1 md:order-2 flex-initial md:flex-1 md:w-1/2 lg:w-7/12 flex flex-col bg-slate-100 border-b md:border-b-0 border-slate-200 shrink-0">
-      
-      <!-- Canvas描画領域 -->
-      <div class="relative flex-1 w-full h-[250px] sm:h-[280px] md:h-full min-h-[220px] bg-white overflow-hidden">
+      <!-- Canvas描画領域（確実な高さを保持） -->
+      <div class="canvas-container">
         <canvas id="simulation-canvas"></canvas>
       </div>
 
       <!-- リアルタイム・状態モニターバー -->
-      <div class="bg-white border-t border-slate-200 px-3 py-1.5 shrink-0 flex items-center justify-center">
-        <div class="grid grid-cols-3 w-full max-w-sm sm:max-w-md gap-2 text-xs text-slate-600">
-          <!-- 角度 θ -->
-          <div class="flex items-center space-x-1">
-            <span class="text-slate-400 text-[11px] shrink-0">角度 θ:</span>
+      <div class="monitor-bar">
+        <div class="monitor-grid text-slate-600">
+          <div class="monitor-item">
+            <span class="text-slate-400 text-[10px] sm:text-[11px] shrink-0">角度:</span>
             <span id="monitor-angle" class="status-badge tabular-nums font-mono flex-1 text-center whitespace-pre">+  0.0°</span>
           </div>
-          <!-- 位置 x -->
-          <div class="flex items-center space-x-1">
-            <span class="text-slate-400 text-[11px] shrink-0">位置 x:</span>
+          <div class="monitor-item">
+            <span class="text-slate-400 text-[10px] sm:text-[11px] shrink-0">位置:</span>
             <span id="monitor-pos" class="status-badge tabular-nums font-mono flex-1 text-center whitespace-pre">+  0.00m</span>
           </div>
-          <!-- 力 F -->
-          <div class="flex items-center space-x-1">
-            <span class="text-slate-400 text-[11px] shrink-0">力 F:</span>
+          <div class="monitor-item">
+            <span class="text-slate-400 text-[10px] sm:text-[11px] shrink-0">力:</span>
             <span id="monitor-force" class="status-badge tabular-nums font-mono flex-1 text-center whitespace-pre">+ 0.0N</span>
           </div>
         </div>
@@ -164,49 +74,127 @@
 
     </main>
 
+    <!-- 2. 操作・解説パネル（スマホ時は下部スクロール、PC時は左ペイン） -->
+    <aside class="controls-pane p-3 sm:p-4 space-y-4">
+      
+      <!-- 【外乱操作】左右ボタン (◀ / ▶) と横幅いっぱいのスライダー枠 -->
+      <section class="bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+        <div class="disturb-container">
+          
+          <!-- 左押しボタン -->
+          <button type="button" id="btn-disturb-left" class="disturb-btn bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded-lg shadow-sm font-bold text-sm sm:text-base text-slate-800 touch-target-min transition" title="左から押す">
+            ◀
+          </button>
+
+          <!-- 中央: 大きなスライドバー枠 -->
+          <div class="disturb-slider-box bg-white border border-slate-200 px-2 sm:px-3 py-1.5 rounded-lg shadow-sm flex flex-col justify-center">
+            <div class="flex items-center justify-between text-[10px] sm:text-xs text-slate-500 font-medium mb-1 whitespace-nowrap">
+              <span>外乱の強さ</span>
+              <span id="val-disturb-strength" class="font-mono font-bold text-slate-900 ml-1">2.0N</span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <button type="button" id="btn-disturb-minus" class="w-6 h-6 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded text-xs font-bold flex items-center justify-center shrink-0 touch-manipulation">−</button>
+              <input type="range" id="slider-disturb-strength" min="0.5" max="5.0" step="0.5" value="2.0" class="flex-1 min-w-[40px] h-2 bg-slate-200 rounded appearance-none cursor-pointer accent-slate-800">
+              <button type="button" id="btn-disturb-plus" class="w-6 h-6 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded text-xs font-bold flex items-center justify-center shrink-0 touch-manipulation">＋</button>
+            </div>
+          </div>
+
+          <!-- 右押しボタン -->
+          <button type="button" id="btn-disturb-right" class="disturb-btn bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded-lg shadow-sm font-bold text-sm sm:text-base text-slate-800 touch-target-min transition" title="右から押す">
+            ▶
+          </button>
+
+        </div>
+      </section>
+
+      <!-- ステップタイトル & ミッション -->
+      <section class="border-t border-slate-100 pt-3">
+        <h2 id="step-title" class="text-sm md:text-base font-bold text-slate-800 mb-1">
+          Step 0: 自然落下（制御なし）
+        </h2>
+        <div class="bg-slate-50 border-l-2 border-slate-700 p-2.5 sm:p-3 rounded-r text-xs text-slate-700 space-y-1">
+          <div class="font-semibold text-slate-900 text-xs">ミッション</div>
+          <p id="step-mission" class="leading-relaxed">
+            初期の傾き角度を設定して再生してみよう。制御がない自然の状態では、重力によって傘は必ず倒れてしまいます。
+          </p>
+        </div>
+      </section>
+
+      <!-- パラメータ調整 -->
+      <section class="border-t border-slate-100 pt-3">
+        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">パラメータ調整</div>
+        <div id="params-container" class="space-y-2">
+          <!-- stepManager.jsで動的生成 -->
+        </div>
+      </section>
+
+      <!-- 数式と理論解説（アコーディオン） -->
+      <section class="border-t border-slate-100 pt-3">
+        <button type="button" id="accordion-header" class="w-full flex items-center justify-between py-1.5 text-xs md:text-sm font-medium text-slate-700 hover:text-slate-900 text-left focus:outline-none">
+          <span>数式・制御則の解説</span>
+          <svg id="accordion-arrow" class="w-4 h-4 text-slate-500 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div id="accordion-body" class="hidden mt-2 p-3 bg-slate-50 border border-slate-200 rounded text-xs text-slate-700 space-y-3">
+          <div class="border-b border-slate-200 pb-2">
+            <div class="text-slate-500 text-xs mb-1">現在の制御則 (入力 F):</div>
+            <div id="formula-display" class="py-1 overflow-x-auto text-center text-sm font-semibold"></div>
+          </div>
+          <div id="theory-content" class="leading-relaxed">
+            <!-- stepManager.jsで動的生成 -->
+          </div>
+        </div>
+      </section>
+
+      <!-- メイン画面用 ステップ進行ボタン -->
+      <section class="pt-3 border-t border-slate-200 flex items-center justify-between gap-2.5">
+        <button type="button" class="btn-prev-step-action hidden px-3.5 py-2.5 text-xs font-medium bg-white text-slate-700 border border-slate-300 rounded hover:bg-slate-100 active:bg-slate-200 transition text-center touch-target-min">
+          ◀ 前のステップ
+        </button>
+        <button type="button" class="btn-next-step-action w-full px-4 py-2.5 text-xs md:text-sm font-medium bg-slate-900 text-white rounded hover:bg-slate-800 active:bg-slate-950 transition text-center touch-target-min shadow-sm">
+          次のステップ (Step 1) ➔
+        </button>
+      </section>
+
+      <!-- 下部スクロールバッファ（確実に最下部まで操作可能にする余白） -->
+      <div class="h-16 sm:h-20 w-full" aria-hidden="true"></div>
+
+    </aside>
+
   </div>
 
-  <!-- ==================== ハンバーガーメニュー（ステップ遷移 & 質量などの設定） ==================== -->
+  <!-- ==================== ハンバーガーメニュー ==================== -->
   <div id="drawer-backdrop" class="fixed inset-0 bg-slate-900/40 z-40 hidden transition-opacity duration-200 opacity-0"></div>
   
-  <aside id="side-drawer" class="fixed top-0 left-0 bottom-0 w-[85vw] max-w-sm bg-white z-50 shadow-2xl flex flex-col transform -translate-x-full transition-transform duration-200 ease-out border-r border-slate-200">
+  <aside id="side-drawer" class="fixed top-0 left-0 bottom-0 w-[82vw] max-w-xs bg-white z-50 shadow-2xl flex flex-col transform -translate-x-full transition-transform duration-200 ease-out border-r border-slate-200">
     
-    <div class="p-3.5 border-b border-slate-200 flex items-center justify-between shrink-0 bg-slate-50">
+    <div class="p-3 border-b border-slate-200 flex items-center justify-between shrink-0 bg-slate-50">
       <div class="flex items-center space-x-2">
         <div class="w-2 h-2 bg-slate-800 rounded-sm"></div>
-        <h2 class="text-sm font-semibold text-slate-800">ステップ遷移 & 物理設定</h2>
+        <h2 class="text-xs sm:text-sm font-semibold text-slate-800">ステップ遷移 & 物理設定</h2>
       </div>
-      <button type="button" id="btn-drawer-close" class="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-200 rounded transition" aria-label="閉じる">
+      <button type="button" id="btn-drawer-close" class="p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-200 rounded transition" aria-label="閉じる">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </button>
     </div>
 
-    <div class="flex-1 overflow-y-auto p-4 space-y-5">
+    <div class="flex-1 custom-scroll p-3.5 space-y-4 pb-16">
       
-      <!-- ステップ遷移ボタン群（タップすると一発で移動しドロワーが閉じる） -->
+      <!-- ステップ遷移ボタン群 -->
       <section>
-        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">ステップ選択</div>
+        <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">ステップ選択</div>
         <div id="step-nav-container" class="flex flex-wrap gap-1.5">
           <!-- stepManager.jsで動的生成 -->
         </div>
       </section>
 
-      <!-- 前へ / 次へ ボタン -->
-      <section class="border-t border-slate-100 pt-3 flex items-center justify-between gap-2">
-        <button type="button" class="btn-prev-step-action hidden px-3.5 py-2 text-xs font-medium bg-white text-slate-700 border border-slate-300 rounded hover:bg-slate-100 active:bg-slate-200 transition text-center touch-target-min">
-          ◀ 前のステップ
-        </button>
-        <button type="button" class="btn-next-step-action w-full px-4 py-2 text-xs font-medium bg-slate-900 text-white rounded hover:bg-slate-800 active:bg-slate-950 transition text-center touch-target-min">
-          次のステップ (Step 1) ➔
-        </button>
-      </section>
-
-      <!-- 物理パラメータ（質量・長さ）設定 -->
-      <section class="border-t border-slate-100 pt-4">
-        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">物理モデル設定（質量・長さ）</div>
-        <div id="physics-params-container" class="space-y-2">
+      <!-- 物理パラメータ（質量・長さ・初期傾き）設定 -->
+      <section class="border-t border-slate-100 pt-3">
+        <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">物理モデル設定（質量・長さ・初期傾き）</div>
+        <div id="physics-params-container" class="space-y-1.5">
           <!-- stepManager.jsで動的生成 -->
         </div>
       </section>
@@ -216,10 +204,10 @@
   </aside>
 
   <!-- スクリプト群読み込み -->
-  <script src="js/physics.js"></script>
-  <script src="js/controller.js"></script>
-  <script src="js/renderer.js"></script>
-  <script src="js/stepManager.js"></script>
-  <script src="js/main.js"></script>
+  <script src="js/physics.js?v=20261029_3"></script>
+  <script src="js/controller.js?v=20261029_3"></script>
+  <script src="js/renderer.js?v=20261029_3"></script>
+  <script src="js/stepManager.js?v=20261029_4"></script>
+  <script src="js/main.js?v=20261029_3"></script>
 </body>
 </html>

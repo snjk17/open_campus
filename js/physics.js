@@ -11,11 +11,12 @@ class InvertedPendulumPhysics {
     this.bc = options.bc ?? 0.1;        // 台車摩擦係数 [N*s/m]
     this.bp = options.bp ?? 0.005;      // 振子軸摩擦係数 [N*m*s/rad]
     this.xLimit = options.xLimit ?? 8.0;// 台車の可動半幅 [m]
+    this.theta0 = options.theta0 ?? (15 * Math.PI) / 180; // 初期傾き角 [rad]（初期値15°）
 
     // 状態変数
     this.x = 0;                         // 台車位置 [m]
     this.v = 0;                         // 台車速度 [m/s]
-    this.theta = 0.05;                  // 振子角度 [rad]（鉛直上向き0、時計回り正）
+    this.theta = this.theta0;           // 振子角度 [rad]（鉛直上向き0、時計回り正）
     this.omega = 0;                     // 振子角速度 [rad/s]
 
     // 制御入力
@@ -28,7 +29,7 @@ class InvertedPendulumPhysics {
    * @param {number} theta0 初期角度 [rad]
    * @param {number} x0 初期台車位置 [m]
    */
-  reset(theta0 = 0, x0 = 0) {
+  reset(theta0 = this.theta0, x0 = 0) {
     this.x = x0;
     this.v = 0;
     this.theta = theta0;

@@ -38,16 +38,25 @@ class PendulumRenderer {
   }
 
   /**
-   * キャンバスのリサイズ＆Retinaスケーリング
+   * キャンバスのリサイズ＆Retinaスケーリング（プレビュー環境でも絶対に0にならない安全設計）
    */
   resize() {
+    const parent = this.canvas.parentElement;
+    const parentRect = parent ? parent.getBoundingClientRect() : null;
     const rect = this.canvas.getBoundingClientRect();
-    this.width = rect.width || 400;
-    this.height = rect.height || 280;
+
+    // 優先順位: rect -> parentRect -> clientWidth -> フォールバック
+    const measuredW = rect.width || (parentRect ? parentRect.width : 0) || this.canvas.clientWidth || 400;
+    const measuredH = rect.height || (parentRect ? parentRect.height : 0) || this.canvas.clientHeight || 280;
+
+    this.width = Math.max(260, measuredW);
+    this.height = Math.max(220, measuredH);
     this.dpr = window.devicePixelRatio || 1;
 
     this.canvas.width = Math.floor(this.width * this.dpr);
     this.canvas.height = Math.floor(this.height * this.dpr);
+    this.canvas.style.width = '100%';
+    this.canvas.style.height = '100%';
 
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.scale(this.dpr, this.dpr);
@@ -55,10 +64,10 @@ class PendulumRenderer {
     // レール位置はCanvas高さの約74%に配置
     this.railY = this.height * 0.74;
 
-    // スケール計算: 左右 ±1.2m、振子全長約1mが上下に収まるように
+    // スケール計算の基準初期値
     const scaleX = (this.width * 0.85) / 2.4;
-    const scaleY = (this.railY * 0.80) / 1.15;
-    this.pixelsPerMeter = Math.max(80, Math.min(scaleX, scaleY));
+    const scaleY = (this.railY * 0.82) / 1.25;
+    this.pixelsPerMeter = Math.max(60, Math.min(scaleX, scaleY));
   }
 
   /**
@@ -100,6 +109,16 @@ class PendulumRenderer {
     const cameraLag = 0.12;
     this.cameraX += (physics.x - this.cameraX) * cameraLag;
 
+    // 振子の長さ（全長 2*l）に応じた動的スケール適応（設定変更時でも絶対に見切れない安全マージン）
+    const pendulumLen = (physics && typeof physics.l === 'number') ? physics.l * 2 : 1.0;
+    const requiredHeightM = this.cartHeightM + pendulumLen + 0.15;
+    const targetScaleY = (this.railY * 0.88) / Math.max(0.5, requiredHeightM);
+    const targetScaleX = (this.width * 0.85) / 2.4;
+    const targetPPM = Math.max(50, Math.min(targetScaleX, targetScaleY));
+    if (isFinite(targetPPM) && targetPPM > 0) {
+      this.pixelsPerMeter += (targetPPM - this.pixelsPerMeter) * 0.15;
+    }
+
     // 1. 背景クリア
     ctx.fillStyle = this.colors.bg;
     ctx.fillRect(0, 0, w, h);
@@ -116,7 +135,6 @@ class PendulumRenderer {
     const pivotWorldY = this.cartHeightM;
 
     // 5. 振子先端の物理座標計算（ピボットを中心に回転、全長 L = 2*l）
-    const pendulumLen = physics.l * 2;
     const tipWorldX = pivotWorldX + pendulumLen * Math.sin(physics.theta);
     const tipWorldY = pivotWorldY + pendulumLen * Math.cos(physics.theta);
 
