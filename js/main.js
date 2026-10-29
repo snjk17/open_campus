@@ -37,11 +37,22 @@ document.addEventListener('DOMContentLoaded', () => {
   function updatePlayPauseButton() {
     if (!btnPlayPause) return;
     if (isRunning) {
-      btnPlayPause.innerHTML = '<span class="mr-1">⏸</span> 停止';
-      btnPlayPause.className = 'px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-slate-200 text-slate-800 border border-slate-300 rounded hover:bg-slate-300 active:bg-slate-400 transition flex items-center touch-target-min';
+      btnPlayPause.innerHTML = `
+        <svg class="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+          <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+        </svg>
+        <span>停止</span>
+      `;
+      btnPlayPause.className = 'px-3 py-1.5 text-xs font-medium bg-amber-500 text-white rounded-md hover:bg-amber-600 active:bg-amber-700 transition flex items-center shadow-sm touch-target-min';
     } else {
-      btnPlayPause.innerHTML = '<span class="mr-1">▶</span> 再生';
-      btnPlayPause.className = 'px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-slate-900 text-white border border-slate-800 rounded hover:bg-slate-800 active:bg-slate-950 transition flex items-center touch-target-min';
+      btnPlayPause.innerHTML = `
+        <svg class="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="6 3 20 12 6 21 6 3"></polygon>
+        </svg>
+        <span>再生</span>
+      `;
+      btnPlayPause.className = 'px-3 py-1.5 text-xs font-medium bg-slate-900 text-white rounded-md hover:bg-slate-800 active:bg-slate-950 transition flex items-center shadow-sm touch-target-min';
     }
   }
 

@@ -14,7 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
   <!-- カスタムスタイル（完全自立型レスポンシブ） -->
-  <link rel="stylesheet" href="css/style.css?v=20261029_8">
+  <link rel="stylesheet" href="css/style.css?v=20261029_9">
 </head>
 <body class="bg-slate-50 text-slate-900 app-layout select-none antialiased">
 
@@ -34,11 +34,18 @@
 
     <!-- 再生/停止 & リセット（デフォルトは停止状態） -->
     <div class="flex items-center space-x-1.5">
-      <button type="button" id="btn-play-pause" class="px-2.5 sm:px-3 py-1 text-xs font-medium bg-slate-900 text-white border border-slate-800 rounded hover:bg-slate-800 active:bg-slate-950 transition flex items-center touch-target-min">
-        <span class="mr-1">▶</span> 再生
+      <button type="button" id="btn-play-pause" class="px-3 py-1.5 text-xs font-medium bg-slate-900 text-white rounded-md hover:bg-slate-800 active:bg-slate-950 transition flex items-center shadow-sm touch-target-min">
+        <svg class="w-3.5 h-3.5 mr-1.5" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="6 3 20 12 6 21 6 3"></polygon>
+        </svg>
+        <span>再生</span>
       </button>
-      <button type="button" id="btn-reset" class="px-2 sm:px-2.5 py-1 text-xs font-medium bg-white text-slate-700 border border-slate-300 rounded hover:bg-slate-100 active:bg-slate-200 transition flex items-center touch-target-min">
-        <span class="mr-1">⟲</span> リセット
+      <button type="button" id="btn-reset" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-white text-slate-700 border border-slate-200 rounded-md hover:bg-slate-100 active:bg-slate-200 transition flex items-center touch-target-min">
+        <svg class="w-3.5 h-3.5 mr-1.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+        </svg>
+        <span>リセット</span>
       </button>
     </div>
   </header>
@@ -85,8 +92,10 @@
         </div>
         <div class="flex items-center gap-2">
           <!-- 左押しボタン -->
-          <button type="button" id="btn-disturb-left" class="disturb-btn bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 rounded-lg text-sm font-bold flex items-center justify-center transition" title="左から押す">
-            ◀
+          <button type="button" id="btn-disturb-left" class="disturb-btn bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 rounded-lg flex items-center justify-center transition" title="左から押す">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m15 18-6-6 6-6"/>
+            </svg>
           </button>
 
           <!-- スライダー & ステッパー -->
@@ -97,8 +106,10 @@
           </div>
 
           <!-- 右押しボタン -->
-          <button type="button" id="btn-disturb-right" class="disturb-btn bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 rounded-lg text-sm font-bold flex items-center justify-center transition" title="右から押す">
-            ▶
+          <button type="button" id="btn-disturb-right" class="disturb-btn bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 rounded-lg flex items-center justify-center transition" title="右から押す">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m9 18 6-6-6-6"/>
+            </svg>
           </button>
         </div>
       </section>
@@ -168,7 +179,7 @@
     <div class="p-3 border-b border-slate-200 flex items-center justify-between shrink-0 bg-slate-50">
       <div class="flex items-center space-x-2">
         <div class="w-2 h-2 bg-slate-800 rounded-sm"></div>
-        <h2 class="text-xs sm:text-sm font-semibold text-slate-800">ステップ遷移 & 物理設定</h2>
+        <h2 class="text-xs sm:text-sm font-semibold text-slate-800">ステップ選択・ パラメータ設定</h2>
       </div>
       <button type="button" id="btn-drawer-close" class="p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-200 rounded transition" aria-label="閉じる">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -189,7 +200,7 @@
 
       <!-- 物理パラメータ（質量・長さ・初期傾き）設定 -->
       <section class="border-t border-slate-100 pt-3">
-        <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">物理モデル設定（質量・長さ・初期傾き）</div>
+        <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-1.5">パラメータ設定</div>
         <div id="physics-params-container" class="space-y-1.5">
           <!-- stepManager.jsで動的生成 -->
         </div>
@@ -200,10 +211,10 @@
   </aside>
 
   <!-- スクリプト群読み込み -->
-  <script src="js/physics.js?v=20261029_8"></script>
-  <script src="js/controller.js?v=20261029_8"></script>
-  <script src="js/renderer.js?v=20261029_8"></script>
-  <script src="js/stepManager.js?v=20261029_8"></script>
-  <script src="js/main.js?v=20261029_8"></script>
+  <script src="js/physics.js?v=20261029_9"></script>
+  <script src="js/controller.js?v=20261029_9"></script>
+  <script src="js/renderer.js?v=20261029_9"></script>
+  <script src="js/stepManager.js?v=20261029_9"></script>
+  <script src="js/main.js?v=20261029_9"></script>
 </body>
 </html>

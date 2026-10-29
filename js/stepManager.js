@@ -228,7 +228,12 @@ class StepManager {
           btn.classList.remove('w-full');
           btn.classList.add('flex-1');
         }
-        btn.textContent = `◀ 前のステップ (Step ${this.activeStepId - 1})`;
+        btn.innerHTML = `
+          <svg class="w-3.5 h-3.5 mr-1 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
+          </svg>
+          <span>前のステップ (Step ${this.activeStepId - 1})</span>
+        `;
       }
     });
 
@@ -245,7 +250,12 @@ class StepManager {
           btn.classList.remove('w-full');
           btn.classList.add('flex-1');
         }
-        btn.textContent = `次のステップ (Step ${this.activeStepId + 1}) ➔`;
+        btn.innerHTML = `
+          <span>次のステップ (Step ${this.activeStepId + 1})</span>
+          <svg class="w-3.5 h-3.5 ml-1 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+          </svg>
+        `;
       }
     });
 
@@ -445,7 +455,7 @@ class StepManager {
       {
         key: 'l',
         label: '振子の重心長 (l)',
-        note: '全長は 2·l',
+        note: '全長は 2l',
         min: 0.2,
         max: 1.0,
         step: 0.05,
@@ -551,7 +561,7 @@ class StepManager {
     const resetBtn = document.createElement('button');
     resetBtn.type = 'button';
     resetBtn.className = 'w-full mt-3 px-3 py-2 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 rounded-lg transition';
-    resetBtn.textContent = '物理パラメータを初期値に戻す';
+    resetBtn.textContent = 'パラメータを初期値に戻す';
     resetBtn.addEventListener('click', () => {
       params.forEach(param => {
         const slider = document.getElementById(`slider-phy-${param.key}`);
