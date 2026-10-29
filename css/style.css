@@ -159,13 +159,13 @@ button, input[type="range"] {
   min-height: 38px;
 }
 
-/* ステップナビゲーションボタン */
+/* ステップナビゲーションボタン（ピル形状の洗練デザイン） */
 .step-nav-btn {
-  padding: 6px 12px;
+  padding: 6px 14px;
   font-size: 0.8125rem;
   font-weight: 500;
-  border-radius: 4px;
-  border: 1px solid var(--border-subtle);
+  border-radius: 9999px;
+  border: none;
   transition: all 0.15s ease-in-out;
   cursor: pointer;
   white-space: nowrap;
@@ -174,16 +174,15 @@ button, input[type="range"] {
 .step-nav-btn-active {
   background-color: #0f172a;
   color: #ffffff;
-  border-color: #0f172a;
 }
 
 .step-nav-btn-inactive {
-  background-color: #ffffff;
+  background-color: #f1f5f9;
   color: #475569;
 }
 
 .step-nav-btn-inactive:hover {
-  background-color: #f1f5f9;
+  background-color: #e2e8f0;
   color: #0f172a;
 }
 
@@ -219,44 +218,98 @@ button, input[type="range"] {
   font-size: 1.0em;
 }
 
-/* 外乱パネル & モニターバーの自立型レイアウト保証 */
-.disturb-container {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
-
+/* 外乱操作 & モニターバーのスタイリッシュ・ミニマルスタイル */
 .disturb-btn {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  border: none;
 }
 
-.disturb-slider-box {
-  flex: 1 1 0%;
-  min-width: 0;
+/* クリーンなミニマルスライダー */
+.clean-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  outline: none;
+  transition: background 0.15s ease;
+}
+
+.clean-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #0f172a;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease;
+}
+
+.clean-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.clean-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #0f172a;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease;
+}
+
+.clean-slider::-moz-range-thumb:hover {
+  transform: scale(1.15);
+}
+
+.monitor-bar {
+  background-color: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  padding: 6px 12px;
+  flex-shrink: 0;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .monitor-grid {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   width: 100%;
-  max-width: 360px;
-  gap: 6px;
-  flex-wrap: nowrap;
+  max-width: 340px;
+  gap: 12px;
 }
 
 .monitor-item {
   display: flex;
   align-items: center;
-  gap: 2px;
-  font-size: 0.75rem;
-  flex: 1 1 0%;
+  gap: 6px;
   min-width: 0;
   justify-content: center;
+}
+
+.monitor-label {
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.monitor-val {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #1e293b;
+  letter-spacing: -0.02em;
 }

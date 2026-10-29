@@ -14,7 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
   <!-- カスタムスタイル（完全自立型レスポンシブ） -->
-  <link rel="stylesheet" href="css/style.css?v=20261029_3">
+  <link rel="stylesheet" href="css/style.css?v=20261029_8">
 </head>
 <body class="bg-slate-50 text-slate-900 app-layout select-none antialiased">
 
@@ -54,20 +54,20 @@
         <canvas id="simulation-canvas"></canvas>
       </div>
 
-      <!-- リアルタイム・状態モニターバー -->
+      <!-- リアルタイム・状態モニターバー（繊細で上品なインジケータ） -->
       <div class="monitor-bar">
-        <div class="monitor-grid text-slate-600">
+        <div class="monitor-grid">
           <div class="monitor-item">
-            <span class="text-slate-400 text-[10px] sm:text-[11px] shrink-0">角度:</span>
-            <span id="monitor-angle" class="status-badge tabular-nums font-mono flex-1 text-center whitespace-pre">+  0.0°</span>
+            <span class="monitor-label">角度</span>
+            <span id="monitor-angle" class="monitor-val font-mono whitespace-pre">+ 15.0°</span>
           </div>
           <div class="monitor-item">
-            <span class="text-slate-400 text-[10px] sm:text-[11px] shrink-0">位置:</span>
-            <span id="monitor-pos" class="status-badge tabular-nums font-mono flex-1 text-center whitespace-pre">+  0.00m</span>
+            <span class="monitor-label">位置</span>
+            <span id="monitor-pos" class="monitor-val font-mono whitespace-pre">+  0.00m</span>
           </div>
           <div class="monitor-item">
-            <span class="text-slate-400 text-[10px] sm:text-[11px] shrink-0">力:</span>
-            <span id="monitor-force" class="status-badge tabular-nums font-mono flex-1 text-center whitespace-pre">+ 0.0N</span>
+            <span class="monitor-label">力</span>
+            <span id="monitor-force" class="monitor-val font-mono whitespace-pre">+ 0.0N</span>
           </div>
         </div>
       </div>
@@ -75,39 +75,35 @@
     </main>
 
     <!-- 2. 操作・解説パネル（スマホ時は下部スクロール、PC時は左ペイン） -->
-    <aside class="controls-pane p-3 sm:p-4 space-y-4">
+    <aside class="controls-pane px-4 py-3 sm:px-5 sm:py-4 space-y-4">
       
-      <!-- 【外乱操作】左右ボタン (◀ / ▶) と横幅いっぱいのスライダー枠 -->
-      <section class="bg-slate-50 border border-slate-200 rounded-lg p-2.5">
-        <div class="disturb-container">
-          
+      <!-- 【外乱操作】枠線をなくしたミニマル＆スタイリッシュな操作エリア -->
+      <section class="disturb-section">
+        <div class="flex items-center justify-between text-xs font-medium text-slate-500 mb-1.5">
+          <span>外乱入力</span>
+          <span id="val-disturb-strength" class="font-mono font-semibold text-slate-800 text-xs">2.0N</span>
+        </div>
+        <div class="flex items-center gap-2">
           <!-- 左押しボタン -->
-          <button type="button" id="btn-disturb-left" class="disturb-btn bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded-lg shadow-sm font-bold text-sm sm:text-base text-slate-800 touch-target-min transition" title="左から押す">
+          <button type="button" id="btn-disturb-left" class="disturb-btn bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 rounded-lg text-sm font-bold flex items-center justify-center transition" title="左から押す">
             ◀
           </button>
 
-          <!-- 中央: 大きなスライドバー枠 -->
-          <div class="disturb-slider-box bg-white border border-slate-200 px-2 sm:px-3 py-1.5 rounded-lg shadow-sm flex flex-col justify-center">
-            <div class="flex items-center justify-between text-[10px] sm:text-xs text-slate-500 font-medium mb-1 whitespace-nowrap">
-              <span>外乱の強さ</span>
-              <span id="val-disturb-strength" class="font-mono font-bold text-slate-900 ml-1">2.0N</span>
-            </div>
-            <div class="flex items-center gap-1.5">
-              <button type="button" id="btn-disturb-minus" class="w-6 h-6 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded text-xs font-bold flex items-center justify-center shrink-0 touch-manipulation">−</button>
-              <input type="range" id="slider-disturb-strength" min="0.5" max="5.0" step="0.5" value="2.0" class="flex-1 min-w-[40px] h-2 bg-slate-200 rounded appearance-none cursor-pointer accent-slate-800">
-              <button type="button" id="btn-disturb-plus" class="w-6 h-6 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded text-xs font-bold flex items-center justify-center shrink-0 touch-manipulation">＋</button>
-            </div>
+          <!-- スライダー & ステッパー -->
+          <div class="flex-1 flex items-center gap-2 min-w-0">
+            <button type="button" id="btn-disturb-minus" class="w-7 h-7 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 rounded-md text-xs font-bold flex items-center justify-center shrink-0 transition">−</button>
+            <input type="range" id="slider-disturb-strength" min="0.5" max="5.0" step="0.5" value="2.0" class="clean-slider flex-1 h-1.5 bg-slate-200 rounded appearance-none cursor-pointer accent-slate-900">
+            <button type="button" id="btn-disturb-plus" class="w-7 h-7 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 rounded-md text-xs font-bold flex items-center justify-center shrink-0 transition">＋</button>
           </div>
 
           <!-- 右押しボタン -->
-          <button type="button" id="btn-disturb-right" class="disturb-btn bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded-lg shadow-sm font-bold text-sm sm:text-base text-slate-800 touch-target-min transition" title="右から押す">
+          <button type="button" id="btn-disturb-right" class="disturb-btn bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 rounded-lg text-sm font-bold flex items-center justify-center transition" title="右から押す">
             ▶
           </button>
-
         </div>
       </section>
 
-      <!-- ステップタイトル & ミッション -->
+      <!-- ステップタイトル & ミッション（※指定通りそのまま維持） -->
       <section class="border-t border-slate-100 pt-3">
         <h2 id="step-title" class="text-sm md:text-base font-bold text-slate-800 mb-1">
           Step 0: 自然落下（制御なし）
@@ -115,31 +111,31 @@
         <div class="bg-slate-50 border-l-2 border-slate-700 p-2.5 sm:p-3 rounded-r text-xs text-slate-700 space-y-1">
           <div class="font-semibold text-slate-900 text-xs">ミッション</div>
           <p id="step-mission" class="leading-relaxed">
-            初期の傾き角度を設定して再生してみよう。制御がない自然の状態では、重力によって傘は必ず倒れてしまいます。
+            再生ボタンを押して、初期の傾きから傘がどのように倒れるか観察してみよう。傘の初期傾きや長さ・重さは左上のメニュー（≡）から自由に変更できます。
           </p>
         </div>
       </section>
 
-      <!-- パラメータ調整 -->
+      <!-- パラメータ調整（ボックスを多用せずスタイリッシュに） -->
       <section class="border-t border-slate-100 pt-3">
-        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">パラメータ調整</div>
-        <div id="params-container" class="space-y-2">
+        <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">パラメータ調整</div>
+        <div id="params-container" class="space-y-2.5">
           <!-- stepManager.jsで動的生成 -->
         </div>
       </section>
 
       <!-- 数式と理論解説（アコーディオン） -->
       <section class="border-t border-slate-100 pt-3">
-        <button type="button" id="accordion-header" class="w-full flex items-center justify-between py-1.5 text-xs md:text-sm font-medium text-slate-700 hover:text-slate-900 text-left focus:outline-none">
+        <button type="button" id="accordion-header" class="w-full flex items-center justify-between py-1 text-xs md:text-sm font-medium text-slate-600 hover:text-slate-900 text-left transition focus:outline-none">
           <span>数式・制御則の解説</span>
-          <svg id="accordion-arrow" class="w-4 h-4 text-slate-500 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg id="accordion-arrow" class="w-4 h-4 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
           </svg>
         </button>
-        <div id="accordion-body" class="hidden mt-2 p-3 bg-slate-50 border border-slate-200 rounded text-xs text-slate-700 space-y-3">
-          <div class="border-b border-slate-200 pb-2">
-            <div class="text-slate-500 text-xs mb-1">現在の制御則 (入力 F):</div>
-            <div id="formula-display" class="py-1 overflow-x-auto text-center text-sm font-semibold"></div>
+        <div id="accordion-body" class="hidden mt-2 pt-2 border-t border-slate-100 text-xs text-slate-600 space-y-3">
+          <div>
+            <div class="text-slate-400 text-[11px] mb-1">現在の制御則 (入力 F):</div>
+            <div id="formula-display" class="py-1 overflow-x-auto text-center text-sm font-semibold text-slate-900"></div>
           </div>
           <div id="theory-content" class="leading-relaxed">
             <!-- stepManager.jsで動的生成 -->
@@ -148,11 +144,11 @@
       </section>
 
       <!-- メイン画面用 ステップ進行ボタン -->
-      <section class="pt-3 border-t border-slate-200 flex items-center justify-between gap-2.5">
-        <button type="button" class="btn-prev-step-action hidden px-3.5 py-2.5 text-xs font-medium bg-white text-slate-700 border border-slate-300 rounded hover:bg-slate-100 active:bg-slate-200 transition text-center touch-target-min">
+      <section class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2.5">
+        <button type="button" class="btn-prev-step-action hidden px-3.5 py-2 text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300 rounded-lg transition text-center touch-target-min">
           ◀ 前のステップ
         </button>
-        <button type="button" class="btn-next-step-action w-full px-4 py-2.5 text-xs md:text-sm font-medium bg-slate-900 text-white rounded hover:bg-slate-800 active:bg-slate-950 transition text-center touch-target-min shadow-sm">
+        <button type="button" class="btn-next-step-action w-full px-4 py-2.5 text-xs md:text-sm font-medium bg-slate-900 text-white rounded-lg hover:bg-slate-800 active:bg-slate-950 transition text-center touch-target-min shadow-sm">
           次のステップ (Step 1) ➔
         </button>
       </section>
@@ -204,10 +200,10 @@
   </aside>
 
   <!-- スクリプト群読み込み -->
-  <script src="js/physics.js?v=20261029_3"></script>
-  <script src="js/controller.js?v=20261029_3"></script>
-  <script src="js/renderer.js?v=20261029_3"></script>
-  <script src="js/stepManager.js?v=20261029_4"></script>
-  <script src="js/main.js?v=20261029_3"></script>
+  <script src="js/physics.js?v=20261029_8"></script>
+  <script src="js/controller.js?v=20261029_8"></script>
+  <script src="js/renderer.js?v=20261029_8"></script>
+  <script src="js/stepManager.js?v=20261029_8"></script>
+  <script src="js/main.js?v=20261029_8"></script>
 </body>
 </html>
