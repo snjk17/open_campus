@@ -236,11 +236,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==================== 7. リサイズ監視 ====================
-  window.addEventListener('resize', () => renderer.resize());
-  window.addEventListener('load', () => renderer.resize());
+  const handleResize = () => {
+    renderer.resize();
+    renderer.render(physics);
+  };
+  window.addEventListener('resize', handleResize);
+  window.addEventListener('orientationchange', () => {
+    setTimeout(handleResize, 100);
+    setTimeout(handleResize, 300);
+  });
+  window.addEventListener('load', handleResize);
 
   if (window.ResizeObserver && canvas.parentElement) {
-    const ro = new ResizeObserver(() => renderer.resize());
+    const ro = new ResizeObserver(handleResize);
     ro.observe(canvas.parentElement);
   }
 });

@@ -110,7 +110,7 @@ html, body {
   text-align: center;
 }
 
-/* 2. 操作・解説パネル（スマホ時は下部スクロール、PC時は左ペイン） */
+/* 2. 操作・解説パネル（スマホ・タブレット縦時は下部スクロール、PC時は左ペイン） */
 .controls-pane {
   flex: 1 1 0%;
   min-height: 0;
@@ -119,18 +119,37 @@ html, body {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  order: 0; /* モバイル時は確実に下部 */
-  padding-bottom: 100px; /* 下部スクロールバッファを十分に確保 */
+  order: 0; /* モバイル・タブレット縦時は下部 */
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 100px); /* セーフエリア対応 */
 }
 
-/* PC & タブレット向け 左右2ペイン（680px以上で自動適用） */
-@media (min-width: 680px) {
+/* タブレット（iPad等）縦向き向け最適化（600px〜1023px） */
+@media (min-width: 600px) and (max-width: 1023px) and (orientation: portrait), (min-width: 600px) and (max-width: 900px) {
+  .simulator-pane {
+    height: 46vh;
+    min-height: 350px;
+    max-height: 500px;
+  }
+  .canvas-container {
+    min-height: 300px;
+  }
+  .controls-pane {
+    max-width: 640px;
+    margin: 0 auto;
+    width: 100%;
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* PC & iPad横向き向け 左右2ペイン（1024px以上、または横向きタブレット） */
+@media (min-width: 1024px), (min-width: 768px) and (orientation: landscape) {
   .main-content {
     flex-direction: row; /* 横並び */
   }
   .controls-pane {
-    width: 350px;
-    max-width: 380px;
+    width: 360px;
+    max-width: 400px;
     flex-shrink: 0;
     border-right: 1px solid var(--border-subtle);
     order: 1; /* 左側 */
@@ -141,7 +160,7 @@ html, body {
     flex: 1 1 0%;
     height: 100%;
     min-height: 0;
-    max-height: none; /* スマホ時のmax-heightを解除 */
+    max-height: none; /* スマホ・タブレット縦時のmax-heightを解除 */
     border-bottom: none;
     order: 2; /* 右側 */
   }
@@ -245,32 +264,32 @@ button, input[type="range"] {
 .clean-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #0f172a;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   transition: transform 0.1s ease;
 }
 
-.clean-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.15);
+.clean-slider::-webkit-slider-thumb:active {
+  transform: scale(1.25);
 }
 
 .clean-slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #0f172a;
   border: none;
   cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
   transition: transform 0.1s ease;
 }
 
-.clean-slider::-moz-range-thumb:hover {
-  transform: scale(1.15);
+.clean-slider::-moz-range-thumb:active {
+  transform: scale(1.25);
 }
 
 .monitor-bar {
