@@ -28,17 +28,14 @@
         </svg>
       </button>
       <h1 class="text-sm md:text-base font-semibold tracking-tight text-slate-800 flex items-center space-x-1.5">
-        <span>倒立振子制御シミュレータ</span>
-        <span id="header-step-badge" class="text-xs font-mono font-medium bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200 ml-1">
-          Step 0 / 4
-        </span>
+        <span>倒立振子シミュレータ</span>
       </h1>
     </div>
 
-    <!-- 再生/停止 & リセット -->
+    <!-- 再生/停止 & リセット（デフォルトは停止状態） -->
     <div class="flex items-center space-x-1.5">
-      <button type="button" id="btn-play-pause" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-slate-200 text-slate-800 border border-slate-300 rounded hover:bg-slate-300 active:bg-slate-400 transition flex items-center touch-target-min">
-        <span class="mr-1">⏸</span> 一時停止
+      <button type="button" id="btn-play-pause" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-slate-900 text-white border border-slate-800 rounded hover:bg-slate-800 active:bg-slate-950 transition flex items-center touch-target-min">
+        <span class="mr-1">▶</span> 再生
       </button>
       <button type="button" id="btn-reset" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-white text-slate-700 border border-slate-300 rounded hover:bg-slate-100 active:bg-slate-200 transition flex items-center touch-target-min">
         <span class="mr-1">⟲</span> リセット
@@ -53,31 +50,31 @@
     <aside class="order-2 md:order-1 flex-1 md:w-1/2 lg:w-5/12 bg-white md:border-r border-slate-200 overflow-y-auto p-4 md:p-5 flex flex-col justify-between space-y-4">
       
       <div class="space-y-4">
-        <!-- 【外乱操作】元の「ステップ進行」の位置に配置 -->
-        <section class="bg-slate-50 border border-slate-200 rounded-lg p-2.5 sm:p-3">
-          <div class="flex items-center justify-between gap-2">
+        <!-- 【外乱操作】左右ボタンを矢印記号のみにし、中央のスライドバー枠を大きく拡大 -->
+        <section class="bg-slate-50 border border-slate-200 rounded-lg p-2.5">
+          <div class="flex items-center gap-2">
             
-            <!-- 左から押すボタン -->
-            <button type="button" id="btn-disturb-left" class="flex-1 py-2.5 px-2 text-xs sm:text-sm font-semibold text-slate-800 bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded shadow-sm transition flex items-center justify-center space-x-1 touch-target-min">
-              <span>◀</span>
+            <!-- 左押しボタン (◀ のみ) -->
+            <button type="button" id="btn-disturb-left" class="w-11 sm:w-12 h-11 shrink-0 bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded-lg shadow-sm font-bold text-base text-slate-800 flex items-center justify-center touch-target-min transition" title="左から押す">
+              ◀
             </button>
 
-            <!-- 中央: 外乱の強さ調整 -->
-            <div class="flex-initial flex flex-col items-center justify-center px-1.5 sm:px-2">
-              <div class="flex items-center justify-between w-full text-[10px] sm:text-[11px] text-slate-500 font-medium mb-1">
-                <span>強さ</span>
-                <span id="val-disturb-strength" class="font-mono font-bold text-slate-800 ml-1">2.0N</span>
+            <!-- 中央: 大きなスライドバー枠 -->
+            <div class="flex-1 bg-white border border-slate-200 px-3 py-1.5 rounded-lg shadow-sm flex flex-col justify-center min-w-0">
+              <div class="flex items-center justify-between text-[11px] sm:text-xs text-slate-500 font-medium mb-1">
+                <span>外乱の強さ</span>
+                <span id="val-disturb-strength" class="font-mono font-bold text-slate-900 text-xs">2.0N</span>
               </div>
-              <div class="flex items-center space-x-1">
-                <button type="button" id="btn-disturb-minus" class="w-6 h-6 bg-white border border-slate-300 rounded text-slate-700 hover:bg-slate-100 active:bg-slate-200 text-xs font-bold flex items-center justify-center touch-manipulation">−</button>
-                <input type="range" id="slider-disturb-strength" min="0.5" max="5.0" step="0.5" value="2.0" class="w-14 sm:w-20 h-1.5 bg-slate-200 rounded appearance-none cursor-pointer accent-slate-800">
-                <button type="button" id="btn-disturb-plus" class="w-6 h-6 bg-white border border-slate-300 rounded text-slate-700 hover:bg-slate-100 active:bg-slate-200 text-xs font-bold flex items-center justify-center touch-manipulation">＋</button>
+              <div class="flex items-center gap-2">
+                <button type="button" id="btn-disturb-minus" class="w-6 h-6 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded text-xs font-bold flex items-center justify-center shrink-0 touch-manipulation">−</button>
+                <input type="range" id="slider-disturb-strength" min="0.5" max="5.0" step="0.5" value="2.0" class="flex-1 h-2 bg-slate-200 rounded appearance-none cursor-pointer accent-slate-800">
+                <button type="button" id="btn-disturb-plus" class="w-6 h-6 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 border border-slate-300 rounded text-xs font-bold flex items-center justify-center shrink-0 touch-manipulation">＋</button>
               </div>
             </div>
 
-            <!-- 右から押すボタン -->
-            <button type="button" id="btn-disturb-right" class="flex-1 py-2.5 px-2 text-xs sm:text-sm font-semibold text-slate-800 bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded shadow-sm transition flex items-center justify-center space-x-1 touch-target-min">
-              <span>▶</span>
+            <!-- 右押しボタン (▶ のみ) -->
+            <button type="button" id="btn-disturb-right" class="w-11 sm:w-12 h-11 shrink-0 bg-white hover:bg-slate-100 active:bg-slate-200 border border-slate-300 rounded-lg shadow-sm font-bold text-base text-slate-800 flex items-center justify-center touch-target-min transition" title="右から押す">
+              ▶
             </button>
 
           </div>

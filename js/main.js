@@ -10,12 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const controller = new InvertedPendulumController();
   const renderer = new PendulumRenderer(canvas);
 
-  let isRunning = true;
+  let isRunning = false; // デフォルトは停止状態
   let lastTime = performance.now();
 
   // 2. ステップ管理の初期化
   const stepManager = new StepManager(controller, physics, (newStepId) => {
     renderer.resetCamera();
+    isRunning = false;
+    updatePlayPauseButton();
   });
 
   // 初期ステップ設定 (Step 0)
@@ -72,13 +74,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function updatePlayPauseButton() {
     if (!btnPlayPause) return;
     if (isRunning) {
-      btnPlayPause.innerHTML = '<span class="mr-1">⏸</span> 一時停止';
-      btnPlayPause.classList.remove('bg-slate-800', 'text-white');
-      btnPlayPause.classList.add('bg-slate-200', 'text-slate-800');
+      btnPlayPause.innerHTML = '<span class="mr-1">⏸</span> 停止';
+      btnPlayPause.className = 'px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-slate-200 text-slate-800 border border-slate-300 rounded hover:bg-slate-300 active:bg-slate-400 transition flex items-center touch-target-min';
     } else {
       btnPlayPause.innerHTML = '<span class="mr-1">▶</span> 再生';
-      btnPlayPause.classList.remove('bg-slate-200', 'text-slate-800');
-      btnPlayPause.classList.add('bg-slate-800', 'text-white');
+      btnPlayPause.className = 'px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-slate-900 text-white border border-slate-800 rounded hover:bg-slate-800 active:bg-slate-950 transition flex items-center touch-target-min';
     }
   }
 
@@ -96,8 +96,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const initRad = (curDeg * Math.PI) / 180;
       physics.reset(initRad, 0);
       renderer.resetCamera();
+      isRunning = false;
+      updatePlayPauseButton();
     });
   }
+
+  // 初期状態（停止）のボタン表示を反映
+  updatePlayPauseButton();
 
   // 6. 外乱ボタン & 強さ設定
   let disturbanceStrength = 2.0;
