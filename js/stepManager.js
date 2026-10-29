@@ -15,12 +15,7 @@ class StepManager {
         shortTitle: 'Step 0',
         mission: '再生ボタンを押して、初期の傾きから傘がどのように倒れるか観察してみよう。傘の初期傾きや長さ・重さは左上のメニュー（≡）から自由に変更できます。',
         formulaKaTeX: 'F = 0',
-        theoryHtml: `
-          <p class="mb-2">台車（手）に力を一切加えない場合、振子の運動は重力トルクのみによって支配されます。</p>
-          <p class="mb-1">微小角での近似方程式：</p>
-          <div class="katex-block my-2" data-expr="\\ddot{\\theta} \\approx \\frac{g}{l} \\theta"></div>
-          <p>この解は指数関数的に増大（$\\theta(t) \\propto e^{\\sqrt{g/l}\\,t}$）し、わずかな傾きからでも瞬時に転倒します。</p>
-        `,
+        theoryHtml: '',
         params: [],
       },
       {
@@ -28,11 +23,8 @@ class StepManager {
         title: 'Step 1: ON/OFF制御',
         shortTitle: 'Step 1',
         mission: '傾いた方向へ、一定の力で手を動かしてみよう。スライダーで押す力の大きさを変更できます。',
-        formulaKaTeX: 'F = \\begin{cases} +F_{\\mathrm{fixed}} & (\\theta > 0) \\\\ -F_{\\mathrm{fixed}} & (\\theta < 0) \\end{cases}',
-        theoryHtml: `
-          <p class="mb-2">傾き $\\theta > 0$ なら右へ、$\\theta < 0$ なら左へ、常に一定の大きさの力 $F_{\\mathrm{fixed}}$ を加える制御則です。</p>
-          <p class="mb-1">不連続な切り替え面上で激しい振動（チャタリング）が生じ、システムが不安定化します。</p>
-        `,
+        formulaKaTeX: '',
+        theoryHtml: '',
         params: [
           {
             key: 'forceFixed',
@@ -47,16 +39,11 @@ class StepManager {
       },
       {
         id: 2,
-        title: 'Step 2: P制御',
+        title: 'Step 2: P制御（比例制御）',
         shortTitle: 'Step 2',
-        mission: '傾きの大きさに応じた力（F = Kp · θ）で手を動かしてみよう。比例ゲイン Kp を変えて挙動を確かめよう。',
+        mission: '傘の傾きの大きさに比例した力で手を動かしてみよう。比例ゲイン Kp を変えると揺れ方はどう変わるかな？',
         formulaKaTeX: 'F = K_p \\cdot \\theta',
-        theoryHtml: `
-          <p class="mb-2">傾き角 $\\theta$ に比例した力（ばねの復元力に相当）を加えます。</p>
-          <p class="mb-1">線形化閉ループ方程式：</p>
-          <div class="katex-block my-2" data-expr="\\ddot{\\theta} + \\left( \\frac{K_p - (M+m)g}{M l} \\right) \\theta \\approx 0"></div>
-          <p>$K_p$ を大きくすると倒れなくなりますが、減衰要素（ダンパー）がないため左右に振動が持続します。</p>
-        `,
+        theoryHtml: '',
         params: [
           {
             key: 'kp',
@@ -71,14 +58,11 @@ class StepManager {
       },
       {
         id: 3,
-        title: 'Step 3: PD制御',
+        title: 'Step 3: PD制御（微分先行制御）',
         shortTitle: 'Step 3',
-        mission: '倒れる速さにブレーキをかける微分ゲイン Kd を加えよう。傘が垂直に安定するか試してみよう。',
+        mission: '倒れる速さにブレーキをかける微分ゲイン Kd を加えよう。傘が垂直にピタッと安定するか試してみよう。',
         formulaKaTeX: 'F = K_p \\cdot \\theta + K_d \\cdot \\dot{\\theta}',
-        theoryHtml: `
-          <p class="mb-2">角度比例項に加え、傾く速度 $\\dot{\\theta}$ に抵抗するダンピング項（$K_d \\dot{\\theta}$）を追加します。</p>
-          <p class="mb-1">振子の振動は急速に減衰して垂直（$\\theta = 0$）に収束しますが、台車位置 $x$ のフィードバックがないため台車のドリフトが生じます。</p>
-        `,
+        theoryHtml: '',
         params: [
           {
             key: 'kp',
@@ -102,15 +86,11 @@ class StepManager {
       },
       {
         id: 4,
-        title: 'Step 4: 完全制御（台車位置保持）',
+        title: 'Step 4: 完全制御（台車位置の保持）',
         shortTitle: 'Step 4',
-        mission: '台車の位置と速度を原点に戻すゲイン（Lp, Ld）を加えよう。外乱ボタンで突いても元の位置に復帰できる？',
+        mission: '手を元の位置（中央）に戻すゲインを加えよう。外乱ボタン（◀ ▶）で突いても倒れずに元の位置に戻れるかな？',
         formulaKaTeX: 'F = K_p \\cdot \\theta + K_d \\cdot \\dot{\\theta} + L_p \\cdot x + L_d \\cdot \\dot{x}',
-        theoryHtml: `
-          <p class="mb-2">全状態量 $X = [x, \\dot{x}, \\theta, \\dot{\\theta}]^T$ をフィードバックする状態フィードバック制御則です。</p>
-          <div class="katex-block my-2" data-expr="u = -K X = [L_p, L_d, K_p, K_d] \\begin{bmatrix} x \\\\ \\dot{x} \\\\ \\theta \\\\ \\dot{\\theta} \\end{bmatrix}"></div>
-          <p>振子の直立安定化と台車位置の原点復帰（$x \\to 0, \\theta \\to 0$）を同時に達成します。</p>
-        `,
+        theoryHtml: '',
         params: [
           {
             key: 'kp',
