@@ -28,7 +28,7 @@ class StepManager {
         params: [
           {
             key: 'forceFixed',
-            label: '押し力 (F_fixed)',
+            label: '押す力 (F_fixed)',
             min: 2,
             max: 30,
             step: 1,
@@ -39,7 +39,7 @@ class StepManager {
       },
       {
         id: 2,
-        title: 'Step 2: P制御（比例制御）',
+        title: 'Step 2: P制御',
         shortTitle: 'Step 2',
         mission: '傘の傾きの大きさに比例した力で手を動かしてみよう。比例ゲイン Kp を変えると揺れ方はどう変わるかな？',
         formulaKaTeX: 'F = K_p \\cdot \\theta',
@@ -58,7 +58,7 @@ class StepManager {
       },
       {
         id: 3,
-        title: 'Step 3: PD制御（微分先行制御）',
+        title: 'Step 3: PD制御',
         shortTitle: 'Step 3',
         mission: '倒れる速さにブレーキをかける微分ゲイン Kd を加えよう。傘が垂直にピタッと安定するか試してみよう。',
         formulaKaTeX: 'F = K_p \\cdot \\theta + K_d \\cdot \\dot{\\theta}',
@@ -433,14 +433,14 @@ class StepManager {
         isAngle: true,
       },
       {
-        key: 'l',
-        label: '振子の重心長 (l)',
-        note: '全長は 2l',
-        min: 0.2,
-        max: 1.0,
+        key: 'L',
+        label: '振子の長さ (L)',
+        note: '傘の全体の長さ',
+        min: 0.4,
+        max: 2.0,
         step: 0.05,
         unit: 'm',
-        default: 0.5,
+        default: 1.0,
       },
       {
         key: 'm',
