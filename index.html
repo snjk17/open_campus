@@ -14,7 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
   <!-- カスタムスタイル（完全自立型レスポンシブ） -->
-  <link rel="stylesheet" href="css/style.css?v=20261029_9">
+  <link rel="stylesheet" href="css/style.css?v=20261029_no_math_1">
 </head>
 <body class="bg-slate-50 text-slate-900 app-layout select-none antialiased">
 
@@ -135,25 +135,6 @@
         </div>
       </section>
 
-      <!-- 数式と理論解説（アコーディオン） -->
-      <section class="border-t border-slate-100 pt-3">
-        <button type="button" id="accordion-header" class="w-full flex items-center justify-between py-1 text-xs md:text-sm font-medium text-slate-600 hover:text-slate-900 text-left transition focus:outline-none">
-          <span>数式・制御則の解説</span>
-          <svg id="accordion-arrow" class="w-4 h-4 text-slate-400 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-          </svg>
-        </button>
-        <div id="accordion-body" class="hidden mt-2 pt-2 border-t border-slate-100 text-xs text-slate-600 space-y-3">
-          <div>
-            <div class="text-slate-400 text-[11px] mb-1">現在の制御則 (入力 F):</div>
-            <div id="formula-display" class="py-1 overflow-x-auto text-center text-sm font-semibold text-slate-900"></div>
-          </div>
-          <div id="theory-content" class="leading-relaxed">
-            <!-- stepManager.jsで動的生成 -->
-          </div>
-        </div>
-      </section>
-
       <!-- メイン画面用 ステップ進行ボタン -->
       <section class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2.5">
         <button type="button" class="btn-prev-step-action hidden px-3.5 py-2 text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300 rounded-lg transition text-center touch-target-min">
@@ -211,10 +192,10 @@
   </aside>
 
   <!-- スクリプト群読み込み -->
-  <script src="js/physics.js?v=20261029_9"></script>
-  <script src="js/controller.js?v=20261029_9"></script>
-  <script src="js/renderer.js?v=20261029_9"></script>
-  <script src="js/stepManager.js?v=20261029_9"></script>
-  <script src="js/main.js?v=20261029_9"></script>
+  <script src="js/physics.js?v=20261029_no_math_1"></script>
+  <script src="js/controller.js?v=20261029_no_math_1"></script>
+  <script src="js/renderer.js?v=20261029_no_math_1"></script>
+  <script src="js/stepManager.js?v=20261029_no_math_1"></script>
+  <script src="js/main.js?v=20261029_no_math_1"></script>
 </body>
 </html>
