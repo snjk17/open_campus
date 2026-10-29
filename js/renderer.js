@@ -109,8 +109,8 @@ class PendulumRenderer {
     const cameraLag = 0.12;
     this.cameraX += (physics.x - this.cameraX) * cameraLag;
 
-    // 振子の長さ（全長 2*l）に応じた動的スケール適応（設定変更時でも絶対に見切れない安全マージン）
-    const pendulumLen = (physics && typeof physics.l === 'number') ? physics.l * 2 : 1.0;
+    // 振子の長さ（全長 L）に応じた動的スケール適応（設定変更時でも絶対に見切れない安全マージン）
+    const pendulumLen = (physics && typeof physics.L === 'number') ? physics.L : 1.0;
     const requiredHeightM = this.cartHeightM + pendulumLen + 0.15;
     const targetScaleY = (this.railY * 0.88) / Math.max(0.5, requiredHeightM);
     const targetScaleX = (this.width * 0.85) / 2.4;

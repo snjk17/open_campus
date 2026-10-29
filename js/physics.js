@@ -6,7 +6,7 @@ class InvertedPendulumPhysics {
     // 物理パラメータ
     this.M = options.M ?? 1.0;          // 台車質量 [kg]
     this.m = options.m ?? 0.15;         // 振子質量 [kg]
-    this.l = options.l ?? 0.5;          // 振子重心長 [m]（全長は 2*l = 1.0m）
+    this.l = options.l ?? 0.5;          // 振子重心長 [m]（全長 L = 2*l = 1.0m）
     this.g = options.g ?? 9.81;         // 重力加速度 [m/s^2]
     this.bc = options.bc ?? 0.1;        // 台車摩擦係数 [N*s/m]
     this.bp = options.bp ?? 0.005;      // 振子軸摩擦係数 [N*m*s/rad]
@@ -22,6 +22,17 @@ class InvertedPendulumPhysics {
     // 制御入力
     this.F = 0;                         // 台車に加える制御力 [N]
     this.maxForce = options.maxForce ?? 40.0; // 力の飽和上限 [N]
+  }
+
+  /**
+   * 振子の全長 L [m]（重心長 l = L / 2 と連動）
+   */
+  get L() {
+    return this.l * 2;
+  }
+
+  set L(value) {
+    this.l = value / 2;
   }
 
   /**
