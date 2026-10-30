@@ -13,9 +13,7 @@ class StepManager {
         id: 0,
         title: 'Step 0: 自然落下（制御なし）',
         shortTitle: 'Step 0',
-        mission: '再生ボタンを押して、初期の傾きから傘がどのように倒れるか観察してみよう。傘の初期傾きや長さ・重さは左上のメニュー（≡）から自由に変更できます。',
-        formulaKaTeX: 'F = 0',
-        theoryHtml: '',
+        mission: '再生ボタンを押して、初期の傾きから傘がどのように倒れるか観察してみよう。',
         params: [],
       },
       {
@@ -23,8 +21,6 @@ class StepManager {
         title: 'Step 1: ON/OFF制御',
         shortTitle: 'Step 1',
         mission: '傾いた方向へ、一定の力で手を動かしてみよう。スライダーで押す力の大きさを変更できます。',
-        formulaKaTeX: '',
-        theoryHtml: '',
         params: [
           {
             key: 'forceFixed',
@@ -42,8 +38,6 @@ class StepManager {
         title: 'Step 2: P制御',
         shortTitle: 'Step 2',
         mission: '傘の傾きの大きさに比例した力で手を動かしてみよう。比例ゲイン Kp を変えると揺れ方はどう変わるかな？',
-        formulaKaTeX: 'F = K_p \\cdot \\theta',
-        theoryHtml: '',
         params: [
           {
             key: 'kp',
@@ -61,12 +55,10 @@ class StepManager {
         title: 'Step 3: PD制御',
         shortTitle: 'Step 3',
         mission: '倒れる速さにブレーキをかける微分ゲイン Kd を加えよう。傘が垂直にピタッと安定するか試してみよう。',
-        formulaKaTeX: 'F = K_p \\cdot \\theta + K_d \\cdot \\dot{\\theta}',
-        theoryHtml: '',
         params: [
           {
             key: 'kp',
-            label: '傘 比例ゲイン (Kp)',
+            label: '比例ゲイン (Kp)',
             min: 10,
             max: 50,
             step: 1,
@@ -75,7 +67,7 @@ class StepManager {
           },
           {
             key: 'kd',
-            label: '傘 微分ゲイン (Kd)',
+            label: '微分ゲイン (Kd)',
             min: 0,
             max: 16,
             step: 0.5,
@@ -86,11 +78,9 @@ class StepManager {
       },
       {
         id: 4,
-        title: 'Step 4: 完全制御（台車位置の保持）',
+        title: 'Step 4: 同時制御',
         shortTitle: 'Step 4',
-        mission: '手を元の位置（中央）に戻すゲインを加えよう。外乱ボタン（◀ ▶）で突いても倒れずに元の位置に戻れるかな？',
-        formulaKaTeX: 'F = K_p \\cdot \\theta + K_d \\cdot \\dot{\\theta} + L_p \\cdot x + L_d \\cdot \\dot{x}',
-        theoryHtml: '',
+        mission: '手を元の位置（中央）に戻すゲインを加えよう。風（◀ ▶）で突いても倒れずに元の位置に戻れるかな？',
         params: [
           {
             key: 'kp',
@@ -112,7 +102,7 @@ class StepManager {
           },
           {
             key: 'lp',
-            label: '手 位置ゲイン (Lp)',
+            label: '手 比例ゲイン (Lp)',
             min: 0,
             max: 10,
             step: 0.5,
@@ -121,7 +111,7 @@ class StepManager {
           },
           {
             key: 'ld',
-            label: '手 速度ゲイン (Ld)',
+            label: '手 微分ゲイン (Ld)',
             min: 0,
             max: 12,
             step: 0.5,
@@ -149,7 +139,6 @@ class StepManager {
     this.renderStepNavigation();
     this.renderStepContent(stepDef);
     this.renderParamSliders(stepDef);
-    this.renderKaTeX(stepDef);
     this.renderPhysicsParams();
 
     if (triggerReset) {
@@ -238,11 +227,6 @@ class StepManager {
         `;
       }
     });
-
-    const headerStep = document.getElementById('header-step-indicator');
-    if (headerStep) {
-      headerStep.textContent = `Step ${this.activeStepId} / ${this.steps.length - 1}`;
-    }
   }
 
   /**
@@ -423,8 +407,7 @@ class StepManager {
     const params = [
       {
         key: 'theta0Deg',
-        label: '初期傾き角 (θ₀)',
-        note: 'シミュレーション開始時の姿勢',
+        label: 'シミュレーション開始時の姿勢',
         min: -45,
         max: 45,
         step: 1,
@@ -434,8 +417,7 @@ class StepManager {
       },
       {
         key: 'L',
-        label: '振子の長さ (L)',
-        note: '傘の全体の長さ',
+        label: '傘の長さ',
         min: 0.4,
         max: 2.0,
         step: 0.05,
@@ -444,8 +426,7 @@ class StepManager {
       },
       {
         key: 'm',
-        label: '振子の質量 (m)',
-        note: '傘の重さ',
+        label: '傘の重さ',
         min: 0.05,
         max: 0.50,
         step: 0.05,
@@ -454,8 +435,7 @@ class StepManager {
       },
       {
         key: 'M',
-        label: '台車の質量 (M)',
-        note: '手の慣性質量',
+        label: '手の質量',
         min: 0.5,
         max: 3.0,
         step: 0.1,
@@ -480,7 +460,6 @@ class StepManager {
         <div class="flex items-center justify-between text-xs font-medium text-slate-700 mb-1">
           <div>
             <span>${param.label}</span>
-            <span class="text-[10px] text-slate-400 block">${param.note}</span>
           </div>
           <span class="font-mono font-semibold text-slate-900 text-xs" id="val-phy-${param.key}">
             ${formattedVal}

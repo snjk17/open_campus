@@ -11,11 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const monitorAngle = document.getElementById('monitor-angle');
   const monitorPos = document.getElementById('monitor-pos');
   const monitorForce = document.getElementById('monitor-force');
-
-  const sliderDisturb = document.getElementById('slider-disturb-strength');
-  const valDisturb = document.getElementById('val-disturb-strength');
-  const btnDisturbMinus = document.getElementById('btn-disturb-minus');
-  const btnDisturbPlus = document.getElementById('btn-disturb-plus');
   const btnDisturbLeft = document.getElementById('btn-disturb-left');
   const btnDisturbRight = document.getElementById('btn-disturb-right');
 
@@ -24,13 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const sideDrawer = document.getElementById('side-drawer');
   const drawerBackdrop = document.getElementById('drawer-backdrop');
 
-  const accordionHeader = document.getElementById('accordion-header');
-  const accordionBody = document.getElementById('accordion-body');
-  const accordionArrow = document.getElementById('accordion-arrow');
-
   // ==================== 2. アプリ状態 ====================
   let isRunning = false; // デフォルトは停止状態
-  let disturbanceStrength = 2.0;
+  let disturbanceStrength = 1.0;
   let lastTime = performance.now();
 
   // ==================== 3. コントロール関数定義 ====================
@@ -54,15 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
       btnPlayPause.className = 'px-3 py-1.5 text-xs font-medium bg-slate-900 text-white rounded-md hover:bg-slate-800 active:bg-slate-950 transition flex items-center shadow-sm touch-target-min';
     }
-  }
-
-  function setDisturbanceStrength(val) {
-    let num = Number(val);
-    num = Math.max(0.5, Math.min(5.0, num));
-    num = Number(num.toFixed(1));
-    disturbanceStrength = num;
-    if (sliderDisturb) sliderDisturb.value = num;
-    if (valDisturb) valDisturb.textContent = `${num.toFixed(1)}N`;
   }
 
   function updateStateMonitor(p) {
@@ -173,18 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 外乱スライダー & ステッパー
-  if (sliderDisturb) {
-    sliderDisturb.addEventListener('input', (e) => setDisturbanceStrength(e.target.value));
-  }
-  if (btnDisturbMinus) {
-    btnDisturbMinus.addEventListener('click', () => setDisturbanceStrength(disturbanceStrength - 0.5));
-  }
-  if (btnDisturbPlus) {
-    btnDisturbPlus.addEventListener('click', () => setDisturbanceStrength(disturbanceStrength + 0.5));
-  }
-
-  // 外乱押しボタン（左から押す: 正のインパルス、右から押す: 負のインパルス）
+  // 外乱ボタン（左から風・右から風）
   if (btnDisturbLeft) {
     btnDisturbLeft.addEventListener('click', () => {
       physics.applyImpulse(disturbanceStrength, disturbanceStrength * 0.2);
@@ -219,21 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
       closeDrawer();
     });
   });
-
-  // 数式アコーディオン
-  if (accordionHeader && accordionBody) {
-    accordionHeader.addEventListener('click', () => {
-      const isHidden = accordionBody.classList.contains('hidden');
-      if (isHidden) {
-        accordionBody.classList.remove('hidden');
-        if (accordionArrow) accordionArrow.style.transform = 'rotate(180deg)';
-        stepManager.renderKaTeX(stepManager.steps[stepManager.activeStepId]);
-      } else {
-        accordionBody.classList.add('hidden');
-        if (accordionArrow) accordionArrow.style.transform = 'rotate(0deg)';
-      }
-    });
-  }
 
   // ==================== 7. リサイズ監視 ====================
   const handleResize = () => {

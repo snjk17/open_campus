@@ -83,32 +83,7 @@ html, body {
   height: 100%;
 }
 
-/* 状態モニターバー */
-.monitor-bar {
-  background-color: #ffffff;
-  border-top: 1px solid var(--border-subtle);
-  padding: 4px 8px;
-  flex-shrink: 0;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.status-badge {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-variant-numeric: tabular-nums;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #334155;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  padding: 2px 4px;
-  border-radius: 4px;
-  display: inline-block;
-  min-width: 52px;
-  text-align: center;
-}
+/* リアルタイム・状態モニターバーは下部で一括定義 */
 
 /* 2. 操作・解説パネル（スマホ・タブレット縦時は下部スクロール、PC時は左ペイン） */
 .controls-pane {
@@ -229,19 +204,12 @@ button, input[type="range"] {
   background: #94a3b8;
 }
 
-.katex-display {
-  margin: 0.4em 0 !important;
-}
 
-.katex {
-  font-size: 1.0em;
-}
 
 /* 外乱操作 & モニターバーのスタイリッシュ・ミニマルスタイル */
 .disturb-btn {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
+  height: 40px;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,6 +217,9 @@ button, input[type="range"] {
   cursor: pointer;
   user-select: none;
   border: none;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* クリーンなミニマルスライダー */

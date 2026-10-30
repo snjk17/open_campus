@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>倒立振子制御シミュレータ | 身近な例から学ぶ制御工学</title>
+  <title>倒立振子制御シミュレータ</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,7 +14,7 @@
   <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
 
   <!-- カスタムスタイル（完全自立型レスポンシブ） -->
-  <link rel="stylesheet" href="css/style.css?v=20261029_ipad_1">
+  <link rel="stylesheet" href="css/style.css?v=20261030_3">
 </head>
 <body class="bg-slate-50 text-slate-900 app-layout select-none antialiased">
 
@@ -84,31 +84,26 @@
     <!-- 2. 操作・解説パネル（スマホ時は下部スクロール、PC時は左ペイン） -->
     <aside class="controls-pane px-4 py-3 sm:px-5 sm:py-4 space-y-4">
       
-      <!-- 【外乱操作】枠線をなくしたミニマル＆スタイリッシュな操作エリア -->
+      <!-- 【外乱操作】風（1.0N固定）の押しやすい大型左右ボタン -->
       <section class="disturb-section">
         <div class="flex items-center justify-between text-xs font-medium text-slate-500 mb-1.5">
-          <span>外乱入力</span>
-          <span id="val-disturb-strength" class="font-mono font-semibold text-slate-800 text-xs">2.0N</span>
+          <span>風の入力</span>
+          <span class="font-mono text-xs text-slate-400">1.0N</span>
         </div>
-        <div class="flex items-center gap-2">
-          <!-- 左押しボタン -->
-          <button type="button" id="btn-disturb-left" class="disturb-btn bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 rounded-lg flex items-center justify-center transition" title="左から押す">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m15 18-6-6 6-6"/>
+        <div class="grid grid-cols-2 gap-2.5">
+          <!-- 左から風ボタン -->
+          <button type="button" id="btn-disturb-left" class="disturb-btn group bg-slate-50 hover:bg-slate-100 active:bg-slate-200 border border-slate-200 rounded-lg flex items-center justify-center gap-2 font-medium text-xs text-slate-700 hover:text-slate-900 transition shadow-sm touch-target-min" title="左から風を吹かせる">
+            <svg class="w-4 h-4 text-slate-500 group-hover:text-slate-900 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 19-7-7 7-7"/>
+              <path d="M19 12H5"/>
             </svg>
           </button>
 
-          <!-- スライダー & ステッパー -->
-          <div class="flex-1 flex items-center gap-2 min-w-0">
-            <button type="button" id="btn-disturb-minus" class="w-7 h-7 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 rounded-md text-xs font-bold flex items-center justify-center shrink-0 transition">−</button>
-            <input type="range" id="slider-disturb-strength" min="0.5" max="5.0" step="0.5" value="2.0" class="clean-slider flex-1 h-1.5 bg-slate-200 rounded appearance-none cursor-pointer accent-slate-900">
-            <button type="button" id="btn-disturb-plus" class="w-7 h-7 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 rounded-md text-xs font-bold flex items-center justify-center shrink-0 transition">＋</button>
-          </div>
-
-          <!-- 右押しボタン -->
-          <button type="button" id="btn-disturb-right" class="disturb-btn bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-800 rounded-lg flex items-center justify-center transition" title="右から押す">
-            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="m9 18 6-6-6-6"/>
+          <!-- 右から風ボタン -->
+          <button type="button" id="btn-disturb-right" class="disturb-btn group bg-slate-50 hover:bg-slate-100 active:bg-slate-200 border border-slate-200 rounded-lg flex items-center justify-center gap-2 font-medium text-xs text-slate-700 hover:text-slate-900 transition shadow-sm touch-target-min" title="右から風を吹かせる">
+            <svg class="w-4 h-4 text-slate-500 group-hover:text-slate-900 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"/>
+              <path d="m12 5 7 7-7 7"/>
             </svg>
           </button>
         </div>
@@ -138,10 +133,10 @@
       <!-- メイン画面用 ステップ進行ボタン -->
       <section class="pt-3 border-t border-slate-100 flex items-center justify-between gap-2.5">
         <button type="button" class="btn-prev-step-action hidden px-3.5 py-2 text-xs font-medium bg-slate-100 text-slate-700 hover:bg-slate-200 active:bg-slate-300 rounded-lg transition text-center touch-target-min">
-          ◀ 前のステップ
+          <svg class="w-3.5 h-3.5 mr-1 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg><span>前のステップ</span>
         </button>
         <button type="button" class="btn-next-step-action w-full px-4 py-2.5 text-xs md:text-sm font-medium bg-slate-900 text-white rounded-lg hover:bg-slate-800 active:bg-slate-950 transition text-center touch-target-min shadow-sm">
-          次のステップ (Step 1) ➔
+          <span>次のステップ (Step 1)</span><svg class="w-3.5 h-3.5 ml-1 inline-block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </button>
       </section>
 
@@ -192,10 +187,10 @@
   </aside>
 
   <!-- スクリプト群読み込み -->
-  <script src="js/physics.js?v=20261029_ipad_1"></script>
-  <script src="js/controller.js?v=20261029_ipad_1"></script>
-  <script src="js/renderer.js?v=20261029_ipad_1"></script>
-  <script src="js/stepManager.js?v=20261029_ipad_1"></script>
-  <script src="js/main.js?v=20261029_ipad_1"></script>
+  <script src="js/physics.js?v=20261030_3"></script>
+  <script src="js/controller.js?v=20261030_3"></script>
+  <script src="js/renderer.js?v=20261030_3"></script>
+  <script src="js/stepManager.js?v=20261030_3"></script>
+  <script src="js/main.js?v=20261030_3"></script>
 </body>
 </html>
