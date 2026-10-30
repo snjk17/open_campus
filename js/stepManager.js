@@ -24,7 +24,7 @@ class StepManager {
         params: [
           {
             key: 'forceFixed',
-            label: '押す力 (F_fixed)',
+            label: '押す力 (F)',
             min: 2,
             max: 30,
             step: 1,
@@ -35,7 +35,7 @@ class StepManager {
       },
       {
         id: 2,
-        title: 'Step 2: P制御',
+        title: 'Step 2: P 制御',
         shortTitle: 'Step 2',
         mission: '傘の傾きの大きさに比例した力で手を動かしてみよう。比例ゲイン Kp を変えると揺れ方はどう変わるかな？',
         params: [
@@ -52,7 +52,7 @@ class StepManager {
       },
       {
         id: 3,
-        title: 'Step 3: PD制御',
+        title: 'Step 3: PD 制御',
         shortTitle: 'Step 3',
         mission: '倒れる速さにブレーキをかける微分ゲイン Kd を加えよう。傘が垂直にピタッと安定するか試してみよう。',
         params: [
