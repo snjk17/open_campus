@@ -80,7 +80,7 @@ class StepManager {
         id: 4,
         title: 'Step 4: 同時制御',
         shortTitle: 'Step 4',
-        mission: '手を元の位置（中央）に戻すゲインを加えよう。風（◀ ▶）で突いても倒れずに元の位置に戻れるかな？',
+        mission: '手を元の位置（中央）に戻すゲインを加えよう。風が吹いても倒れずに元の位置に戻れるかな？',
         params: [
           {
             key: 'kp',
