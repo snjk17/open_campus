@@ -14,7 +14,6 @@ class StepManager {
         title: 'Step 0: 自然落下（制御なし）',
         shortTitle: 'Step 0',
         mission: '再生ボタンを押して、初期の傾きから傘がどのように倒れるか観察してみよう。',
-        params: [],
       },
       {
         id: 1,
